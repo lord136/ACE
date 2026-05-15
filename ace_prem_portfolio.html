@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ace Prem — AI Builder from the Future</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--void:#030308;--deep:rgba(8,8,22,0.85);--glass:rgba(12,10,30,0.4);--glass2:rgba(20,16,50,0.25);
+--border:rgba(140,120,210,0.1);--border-h:rgba(180,140,255,0.25);--glow:#b48cff;--gold:#d4a86a;
+--blue:#6ea8fe;--text:#ece8f5;--dim:rgba(190,185,215,0.45);--mid:rgba(200,195,220,0.7);--accent:#d0a0ff}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--void);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;
+  perspective:1200px;perspective-origin:50% 0%}
+
+canvas#bg{position:fixed;inset:0;z-index:0}
+
+/* Atmospheric layers */
+.atmos{position:fixed;inset:0;pointer-events:none;z-index:1}
+.atmos::before{content:'';position:absolute;width:1000px;height:1000px;top:-40%;right:-15%;border-radius:50%;
+  background:radial-gradient(circle,rgba(200,160,80,0.045) 0%,rgba(180,140,255,0.02) 40%,transparent 70%);
+  animation:breathe 20s ease-in-out infinite alternate}
+.atmos::after{content:'';position:absolute;width:600px;height:600px;bottom:-10%;left:-8%;border-radius:50%;
+  background:radial-gradient(circle,rgba(110,168,254,0.03) 0%,transparent 65%);animation:breathe 16s ease-in-out infinite alternate-reverse}
+@keyframes breathe{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.08) translate(20px,-15px)}}
+
+/* Orbital rings */
+.orbital{position:fixed;border-radius:50%;border:1px solid rgba(200,160,90,0.04);pointer-events:none;z-index:1;
+  animation:orbit 40s linear infinite}
+.orbital-1{width:1200px;height:300px;top:-80px;right:-350px;transform:rotate(-18deg)}
+.orbital-2{width:1400px;height:350px;top:-100px;right:-400px;border-color:rgba(180,140,255,0.025);
+  animation-duration:55s;animation-direction:reverse}
+.orbital-3{width:900px;height:220px;top:-40px;right:-250px;border-color:rgba(110,168,254,0.02);animation-duration:70s}
+@keyframes orbit{0%{transform:rotate(-18deg)}100%{transform:rotate(342deg)}}
+
+/* Wrapper */
+.w{position:relative;z-index:2;max-width:960px;margin:0 auto;padding:0 32px}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 0;position:relative}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.35em;color:var(--gold);
+  text-transform:uppercase;opacity:0;animation:fi .8s .3s forwards;display:flex;align-items:center;gap:14px}
+.hero-tag::before{content:'';width:28px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.hero-h{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(60px,11vw,120px);line-height:.9;
+  letter-spacing:-.04em;opacity:0;animation:fu .9s .5s forwards;position:relative}
+.hero-h .gl{background:linear-gradient(135deg,#d4a0ff 0%,#ffd6a0 50%,#b48cff 100%);background-size:200% 200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:gradShift 6s ease-in-out infinite;filter:drop-shadow(0 0 40px rgba(180,140,255,0.15))}
+@keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.hero-h::after{content:'';position:absolute;bottom:-10px;left:0;width:120px;height:2px;
+  background:linear-gradient(90deg,var(--glow),transparent);opacity:.4}
+.hero-sub{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);letter-spacing:.18em;
+  margin-top:28px;text-transform:uppercase;opacity:0;animation:fi .8s .8s forwards}
+
+/* Buttons */
+.hero-btns{display:flex;gap:14px;margin-top:36px;flex-wrap:wrap;opacity:0;animation:fu .8s 1s forwards}
+.btn{padding:13px 30px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;cursor:pointer;text-decoration:none;position:relative;overflow:hidden;
+  transition:all .45s cubic-bezier(.4,0,.2,1);border-radius:1px}
+.btn-p{background:linear-gradient(135deg,rgba(180,140,255,0.12),rgba(212,168,106,0.08));
+  border:1px solid rgba(200,160,90,0.2);color:var(--gold);backdrop-filter:blur(16px);
+  box-shadow:0 4px 30px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.04)}
+.btn-p:hover{border-color:var(--gold);box-shadow:0 4px 40px rgba(200,160,90,0.12),0 0 60px rgba(180,140,255,0.06),
+  inset 0 1px 0 rgba(255,255,255,0.06);transform:translateY(-2px)}
+.btn-s{border:1px solid var(--border);color:var(--mid);backdrop-filter:blur(12px);background:var(--glass)}
+.btn-s:hover{border-color:var(--border-h);color:var(--accent);transform:translateY(-2px);
+  box-shadow:0 4px 30px rgba(0,0,0,0.2),0 0 30px rgba(180,140,255,0.04)}
+
+/* Status */
+.stats{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap;opacity:0;animation:fi .8s 1.2s forwards}
+.sp{display:flex;align-items:center;gap:8px;padding:7px 15px;backdrop-filter:blur(12px);
+  background:var(--glass);border:1px solid var(--border);font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;
+  transition:all .35s;box-shadow:0 2px 20px rgba(0,0,0,0.2)}
+.sp:hover{border-color:var(--border-h);color:var(--mid)}
+.sp.on{border-color:rgba(180,140,255,0.2);color:var(--accent)}
+.ld{width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 10px var(--glow),0 0 20px rgba(180,140,255,0.2);animation:pulse 2s ease-in-out infinite}
+
+/* Scroll cue */
+.sc{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;
+  align-items:center;gap:8px;opacity:0;animation:fi 1s 1.6s forwards}
+.sc span{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:.25em;text-transform:uppercase}
+.sc i{width:1px;height:28px;background:linear-gradient(to bottom,var(--glow),transparent);animation:scP 2.5s ease-in-out infinite}
+@keyframes scP{0%,100%{opacity:.2;transform:scaleY(.5)}50%{opacity:.8;transform:scaleY(1)}}
+
+/* ===== SECTION SYSTEM ===== */
+.sec{padding:100px 0;opacity:0;transform:translateY(50px) translateZ(-30px);
+  transition:all 1s cubic-bezier(.16,1,.3,1)}
+.sec.v{opacity:1;transform:translateY(0) translateZ(0)}
+.sh{display:flex;align-items:center;gap:16px;margin-bottom:52px}
+.sn{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.1em;opacity:.6}
+.st{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--dim)}
+.sl{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+
+/* ===== GLASS CARD (3D) ===== */
+.gc{position:relative;padding:44px;backdrop-filter:blur(24px) saturate(1.2);-webkit-backdrop-filter:blur(24px) saturate(1.2);
+  background:linear-gradient(145deg,rgba(16,12,40,0.55),rgba(8,6,24,0.35));
+  border:1px solid var(--border);overflow:hidden;border-radius:3px;
+  box-shadow:0 8px 60px rgba(0,0,0,0.4),0 1px 0 rgba(255,255,255,0.03) inset,
+  0 -1px 0 rgba(0,0,0,0.2) inset,0 0 80px rgba(180,140,255,0.015);
+  transition:all .6s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
+.gc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 5%,rgba(180,140,255,0.12) 30%,rgba(212,168,106,0.08) 70%,transparent 95%)}
+.gc::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(165deg,rgba(255,255,255,0.02) 0%,transparent 40%,rgba(180,140,255,0.01) 100%);
+  pointer-events:none}
+.gc:hover{border-color:var(--border-h);transform:translateY(-4px);
+  box-shadow:0 16px 80px rgba(0,0,0,0.5),0 0 60px rgba(180,140,255,0.04),
+  0 1px 0 rgba(255,255,255,0.05) inset}
+
+/* About */
+.at{font-family:'Space Grotesk',sans-serif;font-size:clamp(20px,2.8vw,28px);font-weight:300;line-height:1.7;max-width:700px}
+.at em{color:var(--accent);font-style:normal;font-weight:500;text-shadow:0 0 25px rgba(180,140,255,0.25);position:relative}
+.at em::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,var(--glow),transparent);opacity:.3}
+.an{margin-top:28px;font-size:13px;color:var(--dim);line-height:1.95;max-width:600px;
+  border-left:1px solid rgba(180,140,255,0.12);padding-left:22px}
+
+/* Skills */
+.sg{display:flex;flex-wrap:wrap;gap:10px}
+.sk{padding:10px 20px;backdrop-filter:blur(12px);background:linear-gradient(135deg,rgba(12,10,30,0.5),rgba(8,6,24,0.3));
+  border:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;
+  color:var(--mid);text-transform:uppercase;cursor:default;position:relative;overflow:hidden;
+  box-shadow:0 2px 20px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,0.02);
+  transition:all .4s cubic-bezier(.4,0,.2,1)}
+.sk::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(180,140,255,0.08),transparent);opacity:0;transition:opacity .4s}
+.sk::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(180,140,255,0.03),transparent);opacity:0;transition:opacity .4s}
+.sk:hover{border-color:var(--border-h);color:var(--accent);transform:translateY(-3px) scale(1.02);
+  box-shadow:0 8px 40px rgba(0,0,0,0.3),0 0 30px rgba(180,140,255,0.05)}
+.sk:hover::before,.sk:hover::after{opacity:1}
+
+/* Two-col */
+.tc{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+@media(max-width:640px){.tc{grid-template-columns:1fr}}
+.cc{backdrop-filter:blur(20px);background:linear-gradient(155deg,rgba(14,12,36,0.5),rgba(8,6,24,0.3));
+  border:1px solid var(--border);padding:36px;position:relative;overflow:hidden;
+  box-shadow:0 6px 40px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.02);
+  transition:all .5s cubic-bezier(.4,0,.2,1)}
+.cc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(180,140,255,0.1),transparent);transition:opacity .4s}
+.cc::after{content:'';position:absolute;top:0;right:0;width:80px;height:80px;
+  background:radial-gradient(circle,rgba(180,140,255,0.04),transparent);pointer-events:none}
+.cc:hover{border-color:var(--border-h);transform:translateY(-3px);
+  box-shadow:0 12px 60px rgba(0,0,0,0.4),0 0 40px rgba(180,140,255,0.03)}
+.cc h3{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.28em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:26px;
+  text-shadow:0 0 15px rgba(212,168,106,0.15)}
+.cc ul{list-style:none}
+.cc li{font-size:14px;color:var(--mid);padding:11px 0;border-bottom:1px solid rgba(140,120,210,0.05);
+  display:flex;align-items:center;gap:12px;transition:all .3s}
+.cc li:last-child{border-bottom:none}
+.cc li:hover{color:var(--text);padding-left:6px}
+.cc li::before{content:'›';color:var(--accent);opacity:.4;transition:all .3s;font-size:14px}
+.cc li:hover::before{opacity:1;color:var(--gold)}
+
+/* Manifesto */
+.mc{backdrop-filter:blur(28px) saturate(1.3);
+  background:linear-gradient(145deg,rgba(18,14,44,0.6),rgba(10,8,28,0.4));
+  border:1px solid rgba(180,140,255,0.08);padding:60px 52px;position:relative;overflow:hidden;
+  box-shadow:0 12px 80px rgba(0,0,0,0.5),0 0 100px rgba(180,140,255,0.02),
+  inset 0 1px 0 rgba(255,255,255,0.03)}
+.mc::before{content:'\201C';position:absolute;top:-20px;left:28px;
+  font-family:'Space Grotesk',sans-serif;font-size:220px;font-weight:700;line-height:1;
+  background:linear-gradient(180deg,rgba(180,140,255,0.06),transparent);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mc::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(212,168,106,0.12),transparent)}
+.mc p{font-family:'Space Grotesk',sans-serif;font-size:clamp(17px,2.2vw,22px);font-weight:300;
+  line-height:1.8;position:relative;z-index:1;opacity:.88}
+
+/* Ring divider */
+.rd{display:flex;align-items:center;justify-content:center;padding:56px 0;position:relative}
+.rd .r1,.rd .r2,.rd .r3{position:absolute;border-radius:50%;border:1px solid transparent}
+.rd .r1{width:180px;height:180px;border-color:rgba(180,140,255,0.05);animation:ro 35s linear infinite}
+.rd .r2{width:130px;height:130px;border-color:rgba(212,168,106,0.04);animation:ro 25s linear infinite reverse}
+.rd .r3{width:80px;height:80px;border-color:rgba(110,168,254,0.03);animation:ro 18s linear infinite}
+.rd .cd{width:5px;height:5px;background:var(--accent);border-radius:50%;position:relative;z-index:1;
+  box-shadow:0 0 10px var(--glow),0 0 25px rgba(180,140,255,0.2),0 0 50px rgba(180,140,255,0.08)}
+@keyframes ro{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* Footer */
+.ft{padding:56px 0 36px;border-top:1px solid var(--border);display:flex;justify-content:space-between;
+  align-items:center;flex-wrap:wrap;gap:20px}
+.ft>div{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:.15em;text-transform:uppercase}
+.fd{display:inline-block;width:4px;height:4px;background:var(--gold);border-radius:50%;margin:0 10px;
+  vertical-align:middle;box-shadow:0 0 8px rgba(212,168,106,0.4)}
+
+/* Cursor glow */
+.cursor-glow{position:fixed;width:350px;height:350px;border-radius:50%;pointer-events:none;z-index:1;
+  background:radial-gradient(circle,rgba(180,140,255,0.03) 0%,transparent 70%);
+  transform:translate(-50%,-50%);transition:left .3s ease-out,top .3s ease-out}
+
+@keyframes fu{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+
+@media(max-width:640px){.w{padding:0 20px}.hero{min-height:auto;padding:100px 0 60px}
+  .gc,.mc{padding:28px 22px}.cc{padding:24px 20px}.sec{padding:60px 0}
+  .ft{flex-direction:column;text-align:center;gap:10px}}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<div class="atmos"></div>
+<div class="orbital orbital-1"></div>
+<div class="orbital orbital-2"></div>
+<div class="orbital orbital-3"></div>
+<div class="cursor-glow" id="cg"></div>
+
+<div class="w">
+
+  <section class="hero">
+    <div class="hero-tag">Portfolio · 2025</div>
+    <h1 class="hero-h">Ace<br><span class="gl">Prem</span></h1>
+    <p class="hero-sub">AI Builder · Product Thinker · Prototype Explorer</p>
+    <div class="hero-btns">
+      <a class="btn btn-p" href="mailto:prempeswani1609@gmail.com">Get in Touch</a>
+      <a class="btn btn-s" href="#about">Explore</a>
+    </div>
+    <div class="stats">
+      <div class="sp on"><span class="ld"></span>Open to opportunities</div>
+      <div class="sp">Building independently</div>
+      <div class="sp">AI-first focus</div>
+    </div>
+    <div class="sc"><span>Scroll</span><i></i></div>
+  </section>
+
+  <section class="sec" id="about">
+    <div class="sh"><span class="sn">01</span><span class="st">About</span><div class="sl"></div></div>
+    <div class="gc">
+      <p class="at">I learn by <em>building</em>. Most of my understanding comes from experimentation, AI tools, interface thinking, and rapidly testing ideas in the real world.</p>
+      <p class="an">Focused on AI workflows, product thinking, automation, UI direction, and practical concepts around human-AI interaction. I care more about meaningful technology and difficult problems than titles or money.</p>
+    </div>
+  </section>
+
+  <div class="rd"><div class="r1"></div><div class="r2"></div><div class="r3"></div><div class="cd"></div></div>
+
+  <section class="sec" id="skills">
+    <div class="sh"><span class="sn">02</span><span class="st">Capabilities</span><div class="sl"></div></div>
+    <div class="sg">
+      <span class="sk">AI-assisted prototyping</span><span class="sk">Prompt engineering</span>
+      <span class="sk">Product & MVP thinking</span><span class="sk">UI/UX direction</span>
+      <span class="sk">AI workflow experimentation</span><span class="sk">Creative problem solving</span>
+      <span class="sk">Automation mindset</span><span class="sk">Strategic thinking</span>
+      <span class="sk">Interface ideation</span><span class="sk">Human-AI interaction</span>
+      <span class="sk">Fast adaptive learning</span>
+    </div>
+  </section>
+
+  <div class="rd"><div class="r1"></div><div class="r2"></div><div class="r3"></div><div class="cd"></div></div>
+
+  <section class="sec" id="focus">
+    <div class="sh"><span class="sn">03</span><span class="st">Focus & Passion</span><div class="sl"></div></div>
+    <div class="tc">
+      <div class="cc">
+        <h3>Current Focus</h3>
+        <ul><li>AI-first product ideas</li><li>Experimental workflows</li><li>Startup concepts around AI</li>
+        <li>Minimal futuristic interfaces</li><li>Learning through building</li><li>Practical AI in research</li></ul>
+      </div>
+      <div class="cc">
+        <h3>What Excites Me</h3>
+        <ul><li>Seemingly impossible problems</li><li>People who persist & iterate</li><li>Boundary-pushing environments</li>
+        <li>Testing → failing → improving</li><li>Experimental mindsets</li><li>Meaningful technology</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="rd"><div class="r1"></div><div class="r2"></div><div class="r3"></div><div class="cd"></div></div>
+
+  <section class="sec" id="manifesto">
+    <div class="sh"><span class="sn">04</span><span class="st">Manifesto</span><div class="sl"></div></div>
+    <div class="mc">
+      <p>I admire people who work on problems that initially seem impossible — who continue testing, experimenting, failing, improving, and eventually discovering a solution through sheer persistence. I want to be in environments where people push boundaries instead of accepting limitations.</p>
+    </div>
+  </section>
+
+  <footer class="ft sec">
+    <div>Ace Prem<span class="fd"></span>AI Builder<span class="fd"></span>India</div>
+    <div>Self-taught<span class="fd"></span>Independent<span class="fd"></span>Building</div>
+  </footer>
+
+</div>
+
+<script>
+// Deep-space starfield with depth layers
+!function(){const c=document.getElementById('bg'),x=c.getContext('2d');let w,h,stars=[];
+function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
+function init(){stars=[];for(let i=0;i<280;i++){const d=Math.random();stars.push({x:Math.random()*w,y:Math.random()*h,
+r:d*1.4+.15,a:Math.random(),sp:Math.random()*.004+.001,dir:Math.random()>.5?1:-1,
+col:Math.random()>.85?'200,180,255':Math.random()>.7?'255,214,160':'200,195,220'})}}
+function draw(){x.clearRect(0,0,w,h);for(const s of stars){s.a+=s.sp*s.dir;if(s.a>1||s.a<.05)s.dir*=-1;
+x.beginPath();x.arc(s.x,s.y,s.r,0,6.28);x.fillStyle=`rgba(${s.col},${s.a*.55})`;x.fill();
+if(s.r>1){x.beginPath();x.arc(s.x,s.y,s.r*2.5,0,6.28);x.fillStyle=`rgba(${s.col},${s.a*.06})`;x.fill()}}
+requestAnimationFrame(draw)}
+resize();init();draw();addEventListener('resize',()=>{resize();init()})}();
+
+// Scroll reveal
+const secs=document.querySelectorAll('.sec');
+new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v')})},{threshold:.12}).observe;
+secs.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v')})},{threshold:.12}).observe(s));
+
+// Cursor glow
+const cg=document.getElementById('cg');
+let mx=0,my=0,cx=0,cy=0;
+addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+!function loop(){cx+=(mx-cx)*.08;cy+=(my-cy)*.08;cg.style.left=cx+'px';cg.style.top=cy+'px';requestAnimationFrame(loop)}();
+
+// Subtle parallax
+let t=false;
+addEventListener('scroll',()=>{if(!t){requestAnimationFrame(()=>{const s=scrollY;
+document.querySelectorAll('.orbital').forEach((r,i)=>{r.style.transform=`rotate(${-18+s*.008*(i+1)}deg)`});t=false});t=true}});
+</script>
+</body>
+</html>
